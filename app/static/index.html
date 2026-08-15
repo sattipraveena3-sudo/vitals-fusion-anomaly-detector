@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Vital-Signs Fusion Monitor</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+</head>
+<body>
+  <header><span class="eyebrow">Biomedical signal intelligence</span><h1>Vital-Signs Fusion Monitor</h1><p>Quality-aware state estimation and explainable anomaly detection across synchronized physiological signals.</p></header>
+  <main>
+    <section class="control-card">
+      <div><h2>Analyze a sample window</h2><p>The built-in window contains desaturation, arrhythmia-like variation, sensor corruption, missing readings, and temperature drift.</p></div>
+      <button id="analyze">Run analysis</button>
+    </section>
+    <section id="status" class="status">Ready</section>
+    <section class="metrics"><article><span>Samples</span><strong id="samples">—</strong></article><article><span>Events</span><strong id="events">—</strong></article><article><span>Mean quality</span><strong id="quality">—</strong></article></section>
+    <section class="chart-card"><h2>Raw aligned signals</h2><div id="raw-chart"></div></section>
+    <section class="chart-card"><h2>Fused physiological deviation</h2><div id="fusion-chart"></div></section>
+    <section class="chart-card"><h2>Detected events</h2><div id="event-list"></div></section>
+  </main>
+  <footer>Research demonstration only — not a medical device or diagnostic system.</footer>
+  <script src="/static/app.js"></script>
+</body>
+</html>
