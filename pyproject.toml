@@ -1,10 +1,42 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "vitals-fusion-anomaly-detector"
 version = "1.0.0"
 description = "Quality-aware multimodal physiological signal fusion and anomaly detection"
+readme = "README.md"
 requires-python = ">=3.11"
+dependencies = [
+  "fastapi==0.139.2",
+  "uvicorn[standard]==0.35.0",
+  "pydantic==2.11.7",
+  "pydantic-settings==2.10.1",
+  "numpy==2.2.6",
+  "pandas==2.3.1",
+  "scipy==1.16.1",
+  "matplotlib==3.10.5",
+]
+
+[project.optional-dependencies]
+dev = ["pytest==8.4.1", "httpx==0.28.1", "ruff==0.16.3"]
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+exclude = ["tests*"]
+
+[tool.setuptools.package-data]
+app = ["static/*.html", "static/*.css", "static/*.js"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
 addopts = "-q"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]

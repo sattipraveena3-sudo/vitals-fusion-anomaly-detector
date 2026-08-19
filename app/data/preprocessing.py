@@ -3,7 +3,6 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 
-
 SIGNALS = ("heart_rate", "spo2", "respiration_rate", "temperature")
 PHYSIOLOGICAL_BOUNDS = {
     "heart_rate": (20.0, 240.0),

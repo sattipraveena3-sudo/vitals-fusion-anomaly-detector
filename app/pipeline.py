@@ -32,7 +32,10 @@ class AnalysisPipeline:
             processed.frame, processed.standardized, processed.quality, result
         )
         aligned = {
-            signal: [None if not np.isfinite(value) else round(float(value), 4) for value in processed.frame[signal]]
+            signal: [
+                None if not np.isfinite(value) else round(float(value), 4)
+                for value in processed.frame[signal]
+            ]
             for signal in SIGNALS
         }
         return AnalyzeResponse(

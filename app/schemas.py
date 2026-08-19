@@ -1,3 +1,5 @@
+from itertools import pairwise
+
 from pydantic import BaseModel, Field, model_validator
 
 
@@ -21,7 +23,7 @@ class SignalWindow(BaseModel):
             raise ValueError("timestamps and all signals must have equal lengths")
         if not self.timestamps:
             raise ValueError("signal window cannot be empty")
-        if any(b <= a for a, b in zip(self.timestamps, self.timestamps[1:])):
+        if any(b <= a for a, b in pairwise(self.timestamps)):
             raise ValueError("timestamps must be strictly increasing")
         return self
 

@@ -9,7 +9,7 @@ def test_health_and_analyze_endpoints():
         health = client.get("/health")
         assert health.status_code == 200
         assert health.json()["status"] == "ok"
-        response = client.post("/analyze", json={"sample_id":"synthetic-default"})
+        response = client.post("/analyze", json={"sample_id": "synthetic-default"})
         assert response.status_code == 200
         payload = response.json()
         assert len(payload["timestamps"]) == 120
@@ -18,5 +18,16 @@ def test_health_and_analyze_endpoints():
 
 def test_rejects_mismatched_signal_lengths():
     with TestClient(create_app()) as client:
-        response = client.post("/analyze", json={"signals":{"timestamps":[0,1],"heart_rate":[70],"spo2":[98,98],"respiration_rate":[15,15],"temperature":[36.8,36.8]}})
+        response = client.post(
+            "/analyze",
+            json={
+                "signals": {
+                    "timestamps": [0, 1],
+                    "heart_rate": [70],
+                    "spo2": [98, 98],
+                    "respiration_rate": [15, 15],
+                    "temperature": [36.8, 36.8],
+                }
+            },
+        )
         assert response.status_code == 422

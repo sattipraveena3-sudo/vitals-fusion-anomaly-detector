@@ -76,9 +76,11 @@ git clone https://github.com/sattipraveena3-sudo/vitals-fusion-anomaly-detector.
 cd vitals-fusion-anomaly-detector
 python -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+python -m pip install -e ".[dev]"
 cp .env.example .env            # PowerShell: Copy-Item .env.example .env
-pytest
+ruff check app scripts tests
+ruff format --check app scripts tests
+pytest -q
 uvicorn app.main:app --reload
 ```
 
@@ -121,10 +123,12 @@ The first command creates `data/sample_vitals.csv`. The second creates `artifact
 ## Testing
 
 ```bash
-pytest
+ruff check app scripts tests
+ruff format --check app scripts tests
+pytest -q
 ```
 
-Tests cover resampling and alignment, missing and invalid readings, fusion output shape and numerical sanity, quality-based outlier down-weighting, expected anomaly thresholds, API response structure, and request validation.
+Tests cover resampling and alignment, missing and invalid readings, fusion output shape and numerical sanity, quality-based outlier down-weighting, expected anomaly thresholds, API response structure, and request validation. GitHub Actions runs the full suite on Python 3.11 and 3.12, builds the wheel, and verifies the production container.
 
 ## Known limitations
 
