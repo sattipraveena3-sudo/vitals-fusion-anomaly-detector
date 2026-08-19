@@ -10,8 +10,9 @@ class SyntheticConfig:
     seed: int = 17
 
 
-def generate_synthetic_vitals(config: SyntheticConfig = SyntheticConfig()) -> pd.DataFrame:
+def generate_synthetic_vitals(config: SyntheticConfig | None = None) -> pd.DataFrame:
     """Create synchronized vitals with known events, missingness, drift, and sensor noise."""
+    config = config or SyntheticConfig()
     rng = np.random.default_rng(config.seed)
     time = np.arange(config.duration_seconds, dtype=float)
     slow = np.sin(2 * np.pi * time / 180)

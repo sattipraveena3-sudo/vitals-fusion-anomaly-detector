@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 import numpy as np
 import pandas as pd
 
@@ -22,7 +20,7 @@ class VitalAnomalyDetector:
         merged = mask.copy()
         false_starts = np.flatnonzero(~merged & np.r_[False, merged[:-1]])
         false_ends = np.flatnonzero(~merged & np.r_[merged[1:], False])
-        for start, end in zip(false_starts, false_ends):
+        for start, end in zip(false_starts, false_ends, strict=False):
             if start > 0 and end < len(merged) - 1 and end - start + 1 <= max_gap:
                 merged[start : end + 1] = True
         return merged
@@ -39,17 +37,29 @@ class VitalAnomalyDetector:
         dispersion = np.nanstd(z, axis=1)
         quality_mean = quality.mean(axis=1).to_numpy()
         rules = {
-            "oxygen_desaturation": (values["spo2"].to_numpy() < 92, (92 - values["spo2"].to_numpy()) / 4),
+            "oxygen_desaturation": (
+                values["spo2"].to_numpy() < 92,
+                (92 - values["spo2"].to_numpy()) / 4,
+            ),
             "heart_rate_irregularity": (
-                (values["heart_rate"].to_numpy() < 45) | (values["heart_rate"].to_numpy() > 120) | (np.abs(z[:, 0]) > 3.5),
+                (values["heart_rate"].to_numpy() < 45)
+                | (values["heart_rate"].to_numpy() > 120)
+                | (np.abs(z[:, 0]) > 3.5),
                 np.maximum(np.abs(z[:, 0]) / 3.5, 0),
             ),
             "abnormal_respiration": (
-                (values["respiration_rate"].to_numpy() < 8) | (values["respiration_rate"].to_numpy() > 24),
+                (values["respiration_rate"].to_numpy() < 8)
+                | (values["respiration_rate"].to_numpy() > 24),
                 np.abs(z[:, 2]) / 3,
             ),
-            "temperature_elevation": (values["temperature"].to_numpy() > 38, (values["temperature"].to_numpy() - 37.5) / 0.8),
-            "sensor_conflict": (dispersion > self.conflict_threshold, dispersion / self.conflict_threshold),
+            "temperature_elevation": (
+                values["temperature"].to_numpy() > 38,
+                (values["temperature"].to_numpy() - 37.5) / 0.8,
+            ),
+            "sensor_conflict": (
+                dispersion > self.conflict_threshold,
+                dispersion / self.conflict_threshold,
+            ),
             "fused_instability": (
                 np.abs(fusion.smoothed_state) > self.fused_threshold,
                 np.abs(fusion.smoothed_state) / self.fused_threshold,
@@ -61,7 +71,7 @@ class VitalAnomalyDetector:
             mask = self._merge_short_gaps(np.asarray(mask) & np.isfinite(severity))
             starts = np.flatnonzero(mask & ~np.r_[False, mask[:-1]])
             ends = np.flatnonzero(mask & ~np.r_[mask[1:], False])
-            for start, end in zip(starts, ends):
+            for start, end in zip(starts, ends, strict=False):
                 peak = float(np.nanmax(severity[start : end + 1]))
                 mean_quality = float(np.mean(quality_mean[start : end + 1]))
                 events.append(
@@ -72,7 +82,9 @@ class VitalAnomalyDetector:
                         confidence=round(self._confidence(peak, mean_quality), 4),
                         severity=round(peak, 4),
                         evidence={
-                            "duration_seconds": round(float(timestamps[end] - timestamps[start]), 2),
+                            "duration_seconds": round(
+                                float(timestamps[end] - timestamps[start]), 2
+                            ),
                             "mean_data_quality": round(mean_quality, 3),
                         },
                     )

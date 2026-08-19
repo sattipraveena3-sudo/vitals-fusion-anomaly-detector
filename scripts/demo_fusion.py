@@ -1,15 +1,15 @@
-from pathlib import Path
 import sys
+from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt  # noqa: E402
 
-from app.config import Settings
-from app.pipeline import AnalysisPipeline
-from app.schemas import AnalyzeRequest
+from app.config import Settings  # noqa: E402
+from app.pipeline import AnalysisPipeline  # noqa: E402
+from app.schemas import AnalyzeRequest  # noqa: E402
 
 
 def main() -> None:
@@ -24,8 +24,8 @@ def main() -> None:
     axes[2].plot(result.timestamps, result.fused_state, color="teal", label="Smoothed fused state")
     axes[2].fill_between(
         result.timestamps,
-        [a - b for a, b in zip(result.fused_state, result.uncertainty)],
-        [a + b for a, b in zip(result.fused_state, result.uncertainty)],
+        [a - b for a, b in zip(result.fused_state, result.uncertainty, strict=True)],
+        [a + b for a, b in zip(result.fused_state, result.uncertainty, strict=True)],
         alpha=0.2,
     )
     for event in result.anomalies:
